@@ -1,48 +1,125 @@
-# 🎵 Personal Spotify Wrapped (24/7 Automation)
+# 🎵 Personal Spotify Wrapped (24/7 Live)
+### Track your music history every hour, forever. No more waiting for December.
 
-Stop waiting for December! This project automatically tracks every single song you listen to on Spotify and saves it into a permanent database using **GitHub Actions** and **Python**. Even if you close your laptop, the bot keeps working.
-
-## 🚀 How it Works
-1. **The Bot:** Every hour, a GitHub Action wakes up on a cloud server.
-2. **The Fetch:** It talks to the Spotify API and asks "What did this person just listen to?"
-3. **The Save:** New tracks are saved to `spotify_wrapped.db` and a log is updated in `last_run.txt`.
-4. **The Flex:** You run a local script to see your real-time rankings.
-
----
-
-## 🛠️ Setup Guide (For My Friends)
-
-### 1. The Spotify Part
-* Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
-* Create an App called "My Wrapped".
-* **Important:** Click 'Edit Settings' and add `http://127.0.0.1:8888/callback` as the **Redirect URI**.
-* Copy your **Client ID** and **Client Secret**.
-
-### 2. The GitHub Part
-* **Fork** this repository to your own account.
-* Go to your Fork's **Settings > Secrets and variables > Actions**.
-* Add these 3 "New repository secrets":
-  - `CLIENT_ID`: (Your Spotify ID)
-  - `CLIENT_SECRET`: (Your Spotify Secret)
-  - `REFRESH_TOKEN`: (The token you generate locally)
-* Go to **Settings > Actions > General**, scroll to the bottom, and select **"Read and write permissions"**.
-
-### 3. The Automation Part
-* Go to the **Actions** tab in your repo.
-* Select "Spotify Daily Sync" and click **Run workflow**.
-* If it turns Green ✅, you are officially tracking!
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/Spotify-1DB954?style=for-the-badge&logo=spotify&logoColor=white" />
+  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white" />
+  <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" />
+</p>
 
 ---
 
-## 📊 How to view your stats
-To see your Top Artists and Tracks like I do in my videos:
-1. `git pull origin main` (to get the latest data from the bot).
-2. Run `python check_stats.py`.
+## 🧠 What is this?
+Ever wondered who your **real** #1 artist is in the middle of July? This project is a "Personal Data Engineer" for your music. It uses a GitHub Robot to ask Spotify what you're listening to every hour and saves it into a permanent database.
+
+> "Think of this like a little robot that sits in the cloud and writes down every song you play in a diary."
 
 ---
 
-## 👨‍💻 Tech Stack
-- **Python**: Data processing.
-- **SQLite**: Permanent database storage.
-- **GitHub Actions**: Cloud automation (Cron Job).
-- **Spotipy**: Spotify API library.
+## 🛠️ The Tech Stack
+- **Python**: The brain of the script.
+- **Spotipy**: The bridge between our code and Spotify.
+- **SQLite**: The "Vault" where all your songs are stored.
+- **GitHub Actions**: The "Clockwork" that makes it run every hour for FREE.
+
+---
+
+## 🚀 Quick Setup (The 5-Minute Sprint)
+
+### 1️⃣ Prepare your Environment
+Make sure you have Python installed, then run this in your terminal:
+```powershell
+pip install spotipy python-dotenv
+
+```
+
+### 2️⃣ Get your Spotify Keys
+
+1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+2. Create an App named **"My 24/7 Wrapped"**.
+3. **CRITICAL:** Click `Edit Settings` and add `http://127.0.0.1:8888/callback` as your Redirect URI.
+4. Copy your **Client ID** and **Client Secret**.
+
+### 3️⃣ Generate your Magic Token
+
+Run the setup script:
+
+```powershell
+python get_refresh_token.py
+
+```
+
+After your browser opens and you hit "Agree," run this magic line in your terminal to see your token:
+
+```powershell
+python -c "import json; print(json.load(open('.cache'))['refresh_token'])"
+
+```
+
+### 4️⃣ Set up your `.env` File
+
+Create a file named `.env` and fill it like this:
+
+```ini
+CLIENT_ID=your_id_here
+CLIENT_SECRET=your_secret_here
+REDIRECT_URI=[http://127.0.0.1:8888/callback](http://127.0.0.1:8888/callback)
+REFRESH_TOKEN=your_magic_token_here
+
+```
+
+---
+
+## 🤖 Going Automatic (GitHub Cloud)
+
+Don't want to keep your PC on? Let GitHub do it.
+
+1. **Fork** this repo.
+2. Go to `Settings > Secrets and variables > Actions`.
+3. Add three secrets: `CLIENT_ID`, `CLIENT_SECRET`, and `REFRESH_TOKEN`.
+4. Go to `Actions > General` and give **"Read and write permissions"** to workflows.
+5. **Boom!** Your bot is now alive in the cloud.
+
+---
+
+## 📊 How to Flex your Stats
+
+To see your rankings, just run:
+
+```powershell
+python check_stats.py
+
+```
+
+**It will show you:**
+
+* ✅ Total songs captured
+* 🏆 Top 5 Artists (Real-time)
+* 🔥 Top 5 Tracks
+* 🕙 Most recent syncs
+
+---
+
+## 🔧 Troubleshooting
+
+| Error | Fix |
+| --- | --- |
+| `invalid_grant` | Your Refresh Token is old. Re-run Step 3. |
+| `No module named 'spotipy'` | Run `pip install spotipy`. |
+| `403 Forbidden` | Check your GitHub Actions permissions (Step 4). |
+
+---
+
+<p align="center">
+Built with ❤️ for music lovers. 
+
+
+
+
+<b>If this helped you, give it a ⭐ on GitHub!</b>
+</p>
+
+```
+
+-----
