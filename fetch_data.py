@@ -3,8 +3,9 @@ import sqlite3
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
+from datetime import datetime
 
-# Load variables (Local .env or GitHub Secrets)
+# Load variables (Works for local .env or GitHub Secrets)
 load_dotenv()
 
 CLIENT_ID = os.getenv("CLIENT_ID")
@@ -54,6 +55,12 @@ def fetch_and_save():
                 continue
 
         conn.commit()
+        
+        # Update the Verification Log
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open("last_run.txt", "w") as f:
+            f.write(f"Last successful sync: {now}\nNew tracks added: {count}")
+            
         print(f"Success! Added {count} new tracks.")
     except Exception as e:
         print(f"Error: {e}")

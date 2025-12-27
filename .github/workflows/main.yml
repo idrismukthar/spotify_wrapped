@@ -3,10 +3,10 @@ name: Spotify Daily Sync
 on:
   schedule:
     - cron: "0 * * * *" # Runs every hour
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch: # Allows you to click the 'Run' button manually
 
 permissions:
-  contents: write # Gives the bot permission to save the .db file
+  contents: write # Crucial for saving the .db and .txt files
 
 jobs:
   build:
@@ -35,6 +35,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add spotify_wrapped.db
-          git commit -m "Automated update: Added new tracks" || exit 0
+          git add spotify_wrapped.db last_run.txt
+          git commit -m "Automated update: Sync tracks and log" || exit 0
           git push
