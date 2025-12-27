@@ -2,8 +2,12 @@ name: Spotify Daily Sync
 
 on:
   schedule:
-    - cron: "0 * * * *" # This runs automatically every hour
-  workflow_dispatch: # This gives you a "Run" button on GitHub to test it
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+# ADD THIS PART:
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -11,6 +15,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Uses the built-in token
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -30,8 +36,8 @@ jobs:
 
       - name: Commit and Push changes
         run: |
-          git config --global user.name "Spotify Bot"
-          git config --global user.email "bot@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add spotify_wrapped.db
           git commit -m "Automated update: Added new tracks" || exit 0
           git push
