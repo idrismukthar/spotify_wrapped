@@ -1,0 +1,37 @@
+name: Spotify Daily Sync
+
+on:
+  schedule:
+    - cron: "0 * * * *" # This runs automatically every hour
+  workflow_dispatch: # This gives you a "Run" button on GitHub to test it
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install spotipy python-dotenv
+
+      - name: Run Fetch Script
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          REDIRECT_URI: "http://127.0.0.1:8888/callback"
+        run: python fetch_data.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "Spotify Bot"
+          git config --global user.email "bot@github.com"
+          git add spotify_wrapped.db
+          git commit -m "Automated update: Added new tracks" || exit 0
+          git push
