@@ -41,15 +41,25 @@ def fetch_and_save():
         
         count = 0
         for item in results['items']:
-            track = item['track']
-            played_at = item['played_at']
-            track_name = track['name']
-            artist_name = track['artists'][0]['name']
+            track = item.get('track') or {}
+            played_at = item.get('played_at')
+            track_name = track.get('name', 'Unknown')
+            
+            # Check if it's a track or a podcast episode
+            if track.get('type') == 'episode':
+                show = track.get('show') or {}
+                artist_name = show.get('name', 'Unknown Podcast')
+                album_name = show.get('publisher', 'Podcast')
+            else:
+                artists = track.get('artists')
+                artist_name = artists[0].get('name') if artists and len(artists) > 0 else 'Unknown Artist'
+                album = track.get('album') or {}
+                album_name = album.get('name', 'Unknown Album')
 
             try:
                 cursor.execute('''
                     INSERT INTO streams VALUES (?, ?, ?, ?, ?)
-                ''', (played_at, track_name, artist_name, track['album']['name'], track['duration_ms']))
+                ''', (played_at, track_name, artist_name, album_name, track.get('duration_ms', 0)))
                 
                 # THIS IS THE NEW PART:
                 print(f"✅ Added: {track_name} by {artist_name}")
