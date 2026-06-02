@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify Wrapped Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Wrapped Live</h1>
+          <p>Spotify stats dashboard</p>
+        </div>
+      </div>
+      <nav>
+        <button class="nav-button active" data-target="overview">Overview</button>
+        <button class="nav-button" data-target="habits">Habits</button>
+        <button class="nav-button" data-target="genres">Genres</button>
+        <button class="nav-button" data-target="podcasts">Podcasts</button>
+        <button class="nav-button" data-target="search">Search</button>
+      </nav>
+      <div class="filters">
+        <label>Time Range</label>
+        <select id="rangeSelect">
+          <option value="all">All Time</option>
+          <option value="30d">Last 30 Days</option>
+          <option value="7d">Last 7 Days</option>
+          <option value="today">Today</option>
+        </select>
+        <label>Year</label>
+        <select id="yearSelect">
+          <option value="">All Years</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+        <label>Month</label>
+        <select id="monthSelect">
+          <option value="">All Months</option>
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2>Spotify Wrapped 24/7</h2>
+          <p>Live dashboard for your music and podcast history.</p>
+        </div>
+        <div class="status-chip" id="statusChip">Loading...</div>
+      </header>
+
+      <section class="page overview active" id="overview">
+        <div class="kpi-grid">
+          <article class="kpi-card">
+            <span>Total Listening</span>
+            <strong id="totalTime">—</strong>
+          </article>
+          <article class="kpi-card">
+            <span>Total Tracks</span>
+            <strong id="totalTracks">—</strong>
+          </article>
+          <article class="kpi-card">
+            <span>Unique Artists</span>
+            <strong id="uniqueArtists">—</strong>
+          </article>
+          <article class="kpi-card">
+            <span>Unique Songs</span>
+            <strong id="uniqueSongs">—</strong>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <div class="panel glass">
+            <h3>Top Artists</h3>
+            <div id="topArtists"></div>
+          </div>
+          <div class="panel glass">
+            <h3>Top Tracks</h3>
+            <div id="topTracks"></div>
+          </div>
+          <div class="panel glass full-width">
+            <h3>Music vs Podcasts</h3>
+            <div class="meter-row">
+              <div>
+                <span>Music plays</span>
+                <strong id="musicCount">—</strong>
+              </div>
+              <div>
+                <span>Podcast episodes</span>
+                <strong id="podcastCount">—</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="genres">
+        <div class="panel glass full-width">
+          <h3>Top Genres</h3>
+          <canvas id="genreChart"></canvas>
+        </div>
+      </section>
+
+      <section class="page" id="habits">
+        <div class="habit-grid">
+          <div class="panel glass">
+            <h3>Listening Clock</h3>
+            <canvas id="hourChart"></canvas>
+          </div>
+          <div class="panel glass">
+            <h3>Weekly Pattern</h3>
+            <canvas id="weekdayChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="podcasts">
+        <div class="panel glass">
+          <h3>Podcast Summary</h3>
+          <div class="podcast-stats">
+            <div>
+              <span>Total Hours</span>
+              <strong id="podcastHours">—</strong>
+            </div>
+            <div>
+              <span>Episodes Listened</span>
+              <strong id="podcastEpisodes">—</strong>
+            </div>
+            <div>
+              <span>Unique Shows</span>
+              <strong id="podcastShows">—</strong>
+            </div>
+          </div>
+        </div>
+        <div class="panel glass full-width">
+          <h3>Top Podcast Shows</h3>
+          <div id="topShows"></div>
+        </div>
+      </section>
+
+      <section class="page" id="search">
+        <div class="panel glass search-panel">
+          <h3>Deep Search</h3>
+          <div class="search-box">
+            <input id="searchInput" type="text" placeholder="Search song, artist, podcast, publisher..." />
+            <button id="searchButton">Search</button>
+          </div>
+          <div id="searchResults"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -9,11 +9,23 @@ auth_manager = SpotifyOAuth(
     client_id=os.getenv("CLIENT_ID"),
     client_secret=os.getenv("CLIENT_SECRET"),
     redirect_uri=os.getenv("REDIRECT_URI"),
-    scope="user-read-recently-played"
+    scope="user-read-recently-played user-read-currently-playing user-read-playback-state"
 )
 
-# This checks if we have a token, if not, it opens the browser
-token_info = auth_manager.get_access_token(as_dict=False)
+# This checks if we have a token, and opens the browser if we need authorization.
+cache_token = auth_manager.get_cached_token()
+if cache_token is None:
+    token_info = auth_manager.get_access_token(as_dict=False)
+else:
+    token_info = cache_token
 print("--- Success! ---")
 print("A hidden file named '.cache' has been created in this folder.")
-print("Open it to find your Refresh Token.")
+if isinstance(token_info, dict):
+    refresh_token = token_info.get("refresh_token")
+else:
+    refresh_token = auth_manager.cache_handler.get_cached_token().get("refresh_token") if auth_manager.cache_handler.get_cached_token() else None
+
+if refresh_token:
+    print("Refresh Token:", refresh_token)
+else:
+    print("Use the .cache file to retrieve your refresh token if it is not shown here.")

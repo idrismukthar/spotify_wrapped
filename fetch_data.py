@@ -112,7 +112,8 @@ def fetch_and_save():
         auth_manager = SpotifyOAuth(
             client_id=CLIENT_ID,
             client_secret=CLIENT_SECRET,
-            redirect_uri=REDIRECT_URI
+            redirect_uri=REDIRECT_URI,
+            scope="user-read-recently-playing user-read-currently-playing user-read-playback-state"
         )
         token_info = auth_manager.refresh_access_token(REFRESH_TOKEN)
         sp = spotipy.Spotify(auth=token_info['access_token'])

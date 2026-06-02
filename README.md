@@ -30,8 +30,7 @@ Ever wondered who your **real** #1 artist is in the middle of July? This project
 ### 1️⃣ Prepare your Environment
 Make sure you have Python installed, then run this in your terminal:
 ```powershell
-pip install spotipy python-dotenv
-
+python -m pip install -r requirements.txt
 ```
 
 ### 2️⃣ Get your Spotify Keys
@@ -64,10 +63,21 @@ Create a file named `.env` and fill it like this:
 ```ini
 CLIENT_ID=your_id_here
 CLIENT_SECRET=your_secret_here
-REDIRECT_URI=[http://127.0.0.1:8888/callback](http://127.0.0.1:8888/callback)
+REDIRECT_URI=http://127.0.0.1:8888/callback
 REFRESH_TOKEN=your_magic_token_here
-
 ```
+
+---
+
+### 5️⃣ Run the new dashboard
+
+Start the FastAPI backend and open your browser:
+
+```powershell
+python app.py
+```
+
+Then open: `http://127.0.0.1:8000`
 
 ---
 
