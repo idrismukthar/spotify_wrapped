@@ -82,38 +82,39 @@ async function loadStats() {
     dom.uniqueArtists.textContent = formatNumber(data.unique_artists);
     dom.uniqueSongs.textContent = formatNumber(data.unique_tracks);
 
-  renderList(
-    dom.topArtists,
-    data.top_artists,
-    (item) => `
+    renderList(
+      dom.topArtists,
+      data.top_artists,
+      (item) => `
     <div class="track-item">
       <strong>${item.artist}</strong>
       <span>${item.plays} plays</span>
     </div>
   `,
-  );
+    );
 
-  renderList(
-    dom.topTracks,
-    data.top_tracks,
-    (item) => `
+    renderList(
+      dom.topTracks,
+      data.top_tracks,
+      (item) => `
     <div class="track-item">
       <strong>${item.track}</strong>
       <span>${item.artist} • ${item.plays} plays</span>
     </div>
   `,
-  );
+    );
 
     dom.musicCount.textContent = formatNumber(data.total_tracks);
     const podcastQuery = new URLSearchParams();
     podcastQuery.set("range", state.range);
     if (state.year) podcastQuery.set("year", state.year);
     if (state.month) podcastQuery.set("month", state.month);
-    const podcastData = await fetch(`/api/podcasts?${podcastQuery.toString()}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Podcast API failed: ${res.status}`);
-        return res.json();
-      });
+    const podcastData = await fetch(
+      `/api/podcasts?${podcastQuery.toString()}`,
+    ).then((res) => {
+      if (!res.ok) throw new Error(`Podcast API failed: ${res.status}`);
+      return res.json();
+    });
     dom.podcastCount.textContent = formatNumber(podcastData.episodes_listened);
 
     setStatus(
@@ -231,44 +232,50 @@ async function searchContent() {
   if (!query) return;
   try {
     setStatus("Searching...");
-    const data = await fetch(`/api/search?q=${encodeURIComponent(query)}`).then((res) => {
-      if (!res.ok) throw new Error(`Search failed: ${res.status}`);
-      return res.json();
-    });
+    const data = await fetch(`/api/search?q=${encodeURIComponent(query)}`).then(
+      (res) => {
+        if (!res.ok) throw new Error(`Search failed: ${res.status}`);
+        return res.json();
+      },
+    );
     let html = "";
 
-  if (data.music.length) {
-    html += "<h4>Music</h4>";
-    html += data.music
-      .map(
-        (item) => `
+    if (data.music.length) {
+      html += "<h4>Music</h4>";
+      html += data.music
+        .map(
+          (item) => `
       <div class="search-card">
         <strong>${item.track}</strong>
         <span>${item.artist} • ${item.album}</span>
         <small>${new Date(item.played_at).toLocaleString()}</small>
       </div>
     `,
-      )
-      .join("");
-  }
-  if (data.podcasts.length) {
-    html += "<h4>Podcasts</h4>";
-    html += data.podcasts
-      .map(
-        (item) => `
+        )
+        .join("");
+    }
+    if (data.podcasts.length) {
+      html += "<h4>Podcasts</h4>";
+      html += data.podcasts
+        .map(
+          (item) => `
       <div class="search-card">
         <strong>${item.episode}</strong>
         <span>${item.show} • ${item.publisher}</span>
         <small>${new Date(item.played_at).toLocaleString()}</small>
       </div>
     `,
-      )
-      .join("");
+        )
+        .join("");
+    }
+    if (!data.music.length && !data.podcasts.length) {
+      html = "<p>No matches found.</p>";
+    }
+    dom.searchResults.innerHTML = html;
+  } catch (error) {
+    setStatus("Search failed");
+    console.error(error);
   }
-  if (!data.music.length && !data.podcasts.length) {
-    html = "<p>No matches found.</p>";
-  }
-  dom.searchResults.innerHTML = html;
 }
 
 function attachEvents() {
