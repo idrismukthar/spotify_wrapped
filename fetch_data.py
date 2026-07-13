@@ -1,17 +1,13 @@
 import os
 import sqlite3
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-from dotenv import load_dotenv
 from datetime import datetime
+
+from dotenv import load_dotenv
+
+from spotify_auth import get_spotify_client
 
 # Load variables
 load_dotenv()
-
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = os.getenv("REDIRECT_URI")
-REFRESH_TOKEN = os.getenv("REFRESH_TOKEN")
 
 def save_podcast_stream(played_at, episode_name, show_name, publisher, ms_played):
     conn = sqlite3.connect('podcasts.db')
@@ -109,14 +105,7 @@ def fetch_and_save():
         conn_music.commit()
         conn_music.close()
 
-        auth_manager = SpotifyOAuth(
-            client_id=CLIENT_ID,
-            client_secret=CLIENT_SECRET,
-            redirect_uri=REDIRECT_URI,
-            scope="user-read-recently-playing user-read-currently-playing user-read-playback-state"
-        )
-        token_info = auth_manager.refresh_access_token(REFRESH_TOKEN)
-        sp = spotipy.Spotify(auth=token_info['access_token'])
+        sp = get_spotify_client(scope="user-read-recently-playing user-read-currently-playing user-read-playback-state")
 
         print("--- 🔍 Checking Spotify for new history ---")
         results = sp.current_user_recently_played(limit=50)
@@ -165,6 +154,8 @@ def fetch_and_save():
         else:
             print("\n☕ No new content found since last check.")
 
+    except RuntimeError as reauth_error:
+        print(f"❌ {reauth_error}")
     except Exception as e:
         print(f"❌ Error: {e}")
 

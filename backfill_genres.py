@@ -1,17 +1,13 @@
 import os
 import sqlite3
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-from dotenv import load_dotenv
 import time
+
+from dotenv import load_dotenv
+
+from spotify_auth import get_spotify_client
 
 # Load variables
 load_dotenv()
-
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = os.getenv("REDIRECT_URI")
-REFRESH_TOKEN = os.getenv("REFRESH_TOKEN")
 
 def backfill():
     print("--- Starting Genres Backfill Process ---")
@@ -40,13 +36,7 @@ def backfill():
         return
 
     # 4. Setup Spotify
-    auth_manager = SpotifyOAuth(
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
-        redirect_uri=REDIRECT_URI
-    )
-    token_info = auth_manager.refresh_access_token(REFRESH_TOKEN)
-    sp = spotipy.Spotify(auth=token_info['access_token'])
+    sp = get_spotify_client(scope="user-read-recently-played")
     
     count = 0
     errors = 0
